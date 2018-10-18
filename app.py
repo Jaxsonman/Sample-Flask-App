@@ -1,9 +1,23 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-
-
+from flask_heroku import Heroku
 
 app = Flask(__name__)
+app.config['SQLACHEMY_DATABASE_URI'] = ''
+heroku = Heroku(app)
+db = SQLAlchemy(app)
+
+
+class User(db.Model): 
+    __tablename__ = "users"
+    id  = db.Column(db.Interger, primary_key=True)
+    email = db.Column(db.String(120), unique=True)
+
+    def __init__(self, email):
+        self.email = email
+
+    def __repr__(self):
+        return '<E-mail %r>' % self.email
 
 @app.route('/')
 def index():
@@ -13,6 +27,20 @@ def index():
 def show():
     return render_template('show.html')
 
+@app.route('/collect')
+def collect():
+    return render_template('collect.html')
+
+@app.route('/prereg', methods=['POST'])
+def prereg():
+    email = None
+    if request.methods == 'POST':
+        email == request.form['email']
+        reg = User(email)
+        db.session.add(reg)
+        db.session.commit()
+        return render_template('success.html')
+    return render_template('collect.html')
 
 if __name__ == '__main__':
     app.debug = True

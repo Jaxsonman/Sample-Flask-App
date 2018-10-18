@@ -21,7 +21,7 @@ class User(db.Model):
 
 @app.route('/')
 def index():
-    return render_template('https://sample-flask-app-jaxson.herokuapp.com/')
+    return render_template('index.html')
 
 @app.route('/show')
 def show():

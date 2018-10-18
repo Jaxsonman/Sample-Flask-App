@@ -42,6 +42,11 @@ def prereg():
         return render_template('success.html')
     return render_template('collect.html')
 
+@app.route('/return_emails', methods=['GET'])
+def return_emails():
+    all_emails = db.session.query(User.email).all()
+    return jsonify(all_emails)
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
